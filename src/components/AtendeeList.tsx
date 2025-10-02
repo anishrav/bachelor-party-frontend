@@ -62,7 +62,9 @@ function AttendeeList() {
 
   const rsvpYesCount = attendees.filter((a) => a.hasRSVPd === true).length;
   const rsvpNoCount = attendees.filter((a) => a.hasRSVPd === false).length;
-  const pendingCount = attendees.filter((a) => !a.hasRSVPd || a.hasRSVPd === null).length;
+  const pendingCount = attendees.filter(
+    (a) => a.hasRSVPd === null || a.hasRSVPd === undefined,
+  ).length;
 
   // Helper function to get activities voted by a user
   const getVotedActivities = (userId: string) => {
@@ -173,7 +175,7 @@ function AttendeeList() {
                           />
                         ) : (
                           <Chip
-                            label={hasRSVPd ? 'RSVP Pending' : 'No RSVP'}
+                            label="No RSVP"
                             color="warning"
                             variant="outlined"
                             size="small"

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Card, CardContent, Typography, Button, Box, Chip, Divider, Alert } from '@mui/material';
 import CountdownTimer from './CountdownTimer';
@@ -122,7 +122,7 @@ function TripCard({ title, destination, startDate, endDate }: TripCardProps) {
             </Alert>
           )}
 
-          {!user?.hasRSVPd ? (
+          {user?.hasRSVPd === null || user?.hasRSVPd === undefined ? (
             <>
               <Typography variant="body1" sx={{ mb: 2, textAlign: 'center' }}>
                 Please RSVP to let us know if you can attend
@@ -139,10 +139,10 @@ function TripCard({ title, destination, startDate, endDate }: TripCardProps) {
                 </Button>
               </Box>
             </>
-          ) : (
+          ) : user?.hasRSVPd === true ? (
             <>
               <Box sx={{ mb: 2, textAlign: 'center' }}>
-                <Chip label="You have RSVP'd" color="success" size="medium" />
+                <Chip label="You have RSVP'd Yes" color="success" size="medium" />
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
                 <Button
@@ -153,6 +153,23 @@ function TripCard({ title, destination, startDate, endDate }: TripCardProps) {
                   disabled={isLoading}
                 >
                   Actually, I can't make it
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Box sx={{ mb: 2, textAlign: 'center' }}>
+                <Chip label="You have RSVP'd No" color="error" size="medium" />
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                <Button
+                  variant="outlined"
+                  color="success"
+                  onClick={handleRSVP}
+                  size="medium"
+                  disabled={isLoading}
+                >
+                  Actually, I can make it!
                 </Button>
               </Box>
             </>

@@ -22,7 +22,7 @@ export interface Attendee {
   fullName: string;
   email: string;
   picture?: string;
-  hasRSVPd?: boolean;
+  hasRSVPd?: boolean | null;
 }
 
 export interface VotingState {
@@ -38,7 +38,7 @@ export interface User {
   email: string;
   name: string;
   picture?: string;
-  hasRSVPd?: boolean;
+  hasRSVPd?: boolean | null;
 }
 
 export interface AuthState {
