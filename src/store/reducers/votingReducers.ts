@@ -3,12 +3,7 @@ import { VotingAction } from '../actions/VotingActions';
 import { VOTING_ACTION_TYPES } from '../actions/VotingActions';
 
 const initialState: VotingState = {
-  attendees: [
-    { id: 'user-1', name: 'Mike', status: 'confirmed' },
-    { id: 'user-2', name: 'Dave', status: 'confirmed' },
-    { id: 'user-3', name: 'Tom', status: 'pending' },
-    { id: 'user-4', name: 'Jake', status: 'confirmed' },
-  ],
+  attendees: [],
   activities: [
     {
       id: crypto.randomUUID(),
@@ -234,6 +229,15 @@ export const votingReducer = (state = initialState, action: VotingAction) => {
       return {
         ...state,
         activities: action.payload,
+        isLoading: false,
+        error: null,
+        lastUpdated: Date.now(),
+      };
+
+    case VOTING_ACTION_TYPES.FETCH_ATTENDEES_SUCCESS:
+      return {
+        ...state,
+        attendees: action.payload,
         isLoading: false,
         error: null,
         lastUpdated: Date.now(),

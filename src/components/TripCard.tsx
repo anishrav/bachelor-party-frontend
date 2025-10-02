@@ -17,34 +17,7 @@ function TripCard({ title, destination, startDate, endDate }: TripCardProps) {
   const { user, token } = useSelector((state: RootState) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchRSVPStatus = async () => {
-      if (!user || !token) return;
-
-      try {
-        const response = await fetch(`http://localhost:8000/api/v1/users/${user.id}/rsvp`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          dispatch(
-            setUser({
-              user: { ...user, hasRSVPd: data.hasRSVPd },
-              token,
-            }),
-          );
-        }
-      } catch (err) {
-        console.error('Error fetching RSVP status:', err);
-      }
-    };
-
-    fetchRSVPStatus();
-  }, [user?.id, token, dispatch, user]);
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
   const handleRSVP = async () => {
     if (!user || !token) return;
@@ -53,7 +26,7 @@ function TripCard({ title, destination, startDate, endDate }: TripCardProps) {
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/users/${user.id}/rsvp`, {
+      const response = await fetch(`${apiUrl}/api/v1/users/${user.id}/rsvp`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +61,7 @@ function TripCard({ title, destination, startDate, endDate }: TripCardProps) {
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/users/${user.id}/rsvp`, {
+      const response = await fetch(`${apiUrl}/api/v1/users/${user.id}/rsvp`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

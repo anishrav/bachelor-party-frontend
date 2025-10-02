@@ -68,23 +68,50 @@ function App() {
   const { isAuthenticated, isLoading } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    // Check if user is already authenticated (from localStorage)
-    const token = localStorage.getItem('authToken');
-    const userStr = localStorage.getItem('user');
+    const fetchUserData = async () => {
+      // Check if user is already authenticated (from localStorage)
+      const token = localStorage.getItem('authToken');
+      const userStr = localStorage.getItem('user');
 
-    if (token && userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        dispatch(setUser({ user, token }));
-      } catch (error) {
-        console.error('Error parsing stored user data:', error);
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('user');
+      if (token && userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
+          // Fetch fresh user data from API
+          const response = await fetch(`${apiUrl}/api/v1/users/${user.id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response.ok) {
+            const freshUserData = await response.json();
+            localStorage.setItem('user', JSON.stringify(freshUserData));
+            dispatch(setUser({ user: freshUserData, token }));
+          } else {
+            // If fetch fails, use cached data but still authenticate
+            dispatch(setUser({ user, token }));
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          // On error, try to use cached data
+          try {
+            const user = JSON.parse(userStr);
+            dispatch(setUser({ user, token }));
+          } catch (parseError) {
+            console.error('Error parsing stored user data:', parseError);
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            dispatch(setAuthLoading(false));
+          }
+        }
+      } else {
         dispatch(setAuthLoading(false));
       }
-    } else {
-      dispatch(setAuthLoading(false));
-    }
+    };
+
+    fetchUserData();
   }, [dispatch]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {

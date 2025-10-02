@@ -17,8 +17,12 @@ export interface ActivityOption {
 
 export interface Attendee {
   id: string;
-  name: string;
-  status: 'confirmed' | 'pending';
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  email: string;
+  picture?: string;
+  hasRSVPd?: boolean;
 }
 
 export interface VotingState {

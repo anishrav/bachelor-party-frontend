@@ -1,4 +1,4 @@
-import { ActivityOption } from '../types';
+import { ActivityOption, Attendee } from '../types';
 
 export const VOTING_ACTION_TYPES = {
   VOTE_FOR_ACTIVITY: 'voting/VOTE_FOR_ACTIVITY',
@@ -9,6 +9,7 @@ export const VOTING_ACTION_TYPES = {
   SET_LOADING: 'voting/SET_LOADING',
   SET_ERROR: 'voting/SET_ERROR',
   FETCH_ACTIVITIES_SUCCESS: 'voting/FETCH_ACTIVITIES_SUCCESS',
+  FETCH_ATTENDEES_SUCCESS: 'voting/FETCH_ATTENDEES_SUCCESS',
 } as const;
 
 interface VoteForActivityAction {
@@ -57,6 +58,11 @@ interface FetchActivitiesSuccessAction {
   payload: ActivityOption[];
 }
 
+interface FetchAttendeesSuccessAction {
+  type: typeof VOTING_ACTION_TYPES.FETCH_ATTENDEES_SUCCESS;
+  payload: Attendee[];
+}
+
 export type VotingAction =
   | VoteForActivityAction
   | RemoveVoteAction
@@ -65,7 +71,8 @@ export type VotingAction =
   | DeleteActivityOptionAction
   | SetLoadingAction
   | SetErrorAction
-  | FetchActivitiesSuccessAction;
+  | FetchActivitiesSuccessAction
+  | FetchAttendeesSuccessAction;
 
 export const votingActions = {
   voteForActivity: (activityId: string, userId: string): VotingAction => ({
@@ -99,5 +106,9 @@ export const votingActions = {
   fetchActivitiesSuccess: (activities: ActivityOption[]): VotingAction => ({
     type: VOTING_ACTION_TYPES.FETCH_ACTIVITIES_SUCCESS,
     payload: activities,
+  }),
+  fetchAttendeesSuccess: (attendees: Attendee[]): VotingAction => ({
+    type: VOTING_ACTION_TYPES.FETCH_ATTENDEES_SUCCESS,
+    payload: attendees,
   }),
 };
